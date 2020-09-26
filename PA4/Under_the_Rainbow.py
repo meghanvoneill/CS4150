@@ -29,15 +29,22 @@ def penalty(dist, i=0, penalties={}):
     min_p = math.inf
 
     for k in range(i + 1, n):
-        p_of_i = 400 - distance(dist[i], dist[k])
-        min_p = min(p_of_i * p_of_i + penalty(dist, k), min_p)
+        # Use memoization.
+        if (i, k) in penalties.keys():
+            p_of_i = penalties[(i, k)]
+            min_p = min(p_of_i, min_p)
+        # Otherwise, we haven't seen this path yet.
+        else:
+            p_of_i = 400 - (dist[k] - dist[i])
+            penalties[(i, k)] = p_of_i * p_of_i + penalty(dist, k, penalties)
+            min_p = min(penalties[(i, k)], min_p)
 
     return min_p
 
 
 def distance(a, b):
 
-    dist = abs(b - a)
+    dist = b - a    # dist = abs(b - a)
 
     return dist
 
